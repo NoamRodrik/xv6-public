@@ -409,6 +409,7 @@ sys_chdir(void)
   iput(p->cwd);
   end_op();
   p->cwd = ip;
+
   return 0;
 }
 

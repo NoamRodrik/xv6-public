@@ -2,6 +2,8 @@
 _*
 *.o
 *.d
+.vs/
+*.pyc
 *.asm
 *.sym
 *.img

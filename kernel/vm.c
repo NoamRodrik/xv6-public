@@ -440,3 +440,39 @@ copyinstr(pagetable_t pagetable, char *dst, uint64 srcva, uint64 max)
     return -1;
   }
 }
+
+/// Printing the indentation of the tree
+static void printindent(int len)
+{
+  /* printing the indentation of the tree */
+  for (int prefix_index = 0; prefix_index < len; ++prefix_index) {
+    printf(".. ");
+  }
+}
+
+/// Walks over all the levels of the tree and prints its values
+static void printptetree(pagetable_t pagetable, int level)
+{
+  pte_t pte;
+  int pte_index;
+
+  if (pagetable == 0 || level < 0 || level > 2) {
+    return;
+  }
+
+  for (pte_index = 0; pte_index < PTSIZE; ++pte_index) {
+    pte = *(pagetable + pte_index);
+    if (pte & PTE_V) {
+      printindent(2 - level);
+      printf("..%d: pte %p pa %p\n", pte_index, pte, (pagetable_t)PTE2PA(pte));
+      printptetree((pagetable_t)PTE2PA(pte), level - 1);
+    }
+  }
+}
+
+/// Prints the 3 pagetables that are in the process.
+void vmprint(pagetable_t pagetable)
+{
+  printf("page table %p\n", pagetable);
+  printptetree(pagetable, 2);
+}
